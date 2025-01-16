@@ -26,7 +26,7 @@ app.use(cors());
 // Routes
 app.use("/api/", router);
 
-const MONGO_URI = "mongodb://localhost:27017/tasksdb";
+const MONGO_URI = "mongodb+srv://priyanshujain:PjayaApVRjb0UEUk@cluster0.uej8d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose.connect(MONGO_URI);
 
 // Base route

@@ -13,6 +13,33 @@ class AllController {
         }
     }
 
+    async updateTask(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await allService.updateTask(req.body)
+            res.status(200).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async deleteTask(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await allService.deleteTask(req.params.id)
+            res.status(200).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async setComplete(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await allService.setComplete(req.params.id)
+            res.status(200).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     async getTasksByUser(req: Request, res: Response, next: NextFunction) {
         try {
             const data = await allService.getTasksByUser(req.params.username)

@@ -4,6 +4,7 @@ import { UserModel } from '../utils/schema/user.schema'
 import ICreateTask from '../utils/interfaces/ICreateTask'
 import { TaskModel } from '../utils/schema/task.schema'
 import ILogin from '../utils/interfaces/ILogin'
+import IUpdateTask from '../utils/interfaces/IUpdateTask'
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -17,6 +18,20 @@ class AllService {
                 email,
                 password: hashedPassword
             })
+            return data
+        } catch (error) {
+            return error
+        }
+    }
+
+    async updateTask(task: IUpdateTask) {
+        try {
+            const data = await TaskModel.findOneAndUpdate({ id: task.id }, {
+                title: task.title,
+                description: task.description,
+                priority: task.priority,
+                deadline: task.deadline
+            }, { new: true })
             return data
         } catch (error) {
             return error
@@ -50,6 +65,24 @@ class AllService {
         } catch (error) {
             return error
         }
+    }
+
+    async deleteTask(id: string) {
+        try {
+            const data = await TaskModel.deleteOne({ id })
+            return data
+        } catch (error) {
+            return error
+        }
+    }
+    
+    async setComplete(id: string) {
+        try {
+            const data = await TaskModel.findOneAndUpdate({ id }, { completed: true }, { new: true })
+            return data
+        } catch (error) {
+            return error
+        }   
     }
 
     async createTask(task: ICreateTask) {
