@@ -10,5 +10,6 @@ router.post('/updateTask', allController.updateTask)
 router.get('/tasksByUser/:username', allController.getTasksByUser)
 router.delete('/deleteTask/:id', allController.deleteTask)
 router.post('/setComplete/:id', allController.setComplete)
+router.post('/getAISuggestion', allController.getAISuggestion)
 
 export default router

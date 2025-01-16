@@ -13,6 +13,15 @@ class AllController {
         }
     }
 
+    async getAISuggestion(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = await allService.getAISuggestion(req.body)
+            res.status(200).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
     async updateTask(req: Request, res: Response, next: NextFunction) {
         try {
             const data = await allService.updateTask(req.body)

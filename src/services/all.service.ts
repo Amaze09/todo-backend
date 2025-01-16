@@ -5,6 +5,7 @@ import ICreateTask from '../utils/interfaces/ICreateTask'
 import { TaskModel } from '../utils/schema/task.schema'
 import ILogin from '../utils/interfaces/ILogin'
 import IUpdateTask from '../utils/interfaces/IUpdateTask'
+import { suggestTaskPriority, mapToTaskInput } from '../utils/ai';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -19,6 +20,22 @@ class AllService {
                 password: hashedPassword
             })
             return data
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getAISuggestion(data: any) {
+        try {
+            const tasks = await this.getTasksByUser(data.username) as any[]
+            console.log("tasks------------------",tasks)
+            const taskInputs = mapToTaskInput(tasks)
+            console.log("taskInputs------------------",taskInputs)
+            const returnValue = await suggestTaskPriority(taskInputs)
+            console.log("returnValue------------------",returnValue)
+            return {
+                suggestion: returnValue
+            }
         } catch (error) {
             return error
         }
@@ -60,7 +77,7 @@ class AllService {
     async getTasksByUser(username: string) {
         try {
             const data = await UserModel.findOne({ username })
-            const tasks = await TaskModel.find({id : {$in: data?.taskIds } })
+            const tasks = await TaskModel.find({ id: { $in: data?.taskIds } })
             return tasks
         } catch (error) {
             return error
@@ -75,14 +92,14 @@ class AllService {
             return error
         }
     }
-    
+
     async setComplete(id: string) {
         try {
             const data = await TaskModel.findOneAndUpdate({ id }, { completed: true }, { new: true })
             return data
         } catch (error) {
             return error
-        }   
+        }
     }
 
     async createTask(task: ICreateTask) {
