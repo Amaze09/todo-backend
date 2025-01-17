@@ -1,13 +1,15 @@
 import { ethers } from "ethers";
+import * as dotenv from "dotenv";
 import abiData from "./abi.json";
 
+dotenv.config();
 const contractABI = abiData.abi
 
-const contractAddress = "0x349F5e1C035e240A2Ac2BD27a0098C6e3cdD0D16";
+const contractAddress = process.env.CONTRACT_ADDRESS || "0x349F5e1C035e240A2Ac2BD27a0098C6e3cdD0D16";
 
-const providerURL = "https://eth-holesky.g.alchemy.com/v2/PvLeTNClkXBHhrLSK7-ulPtES2QFEvKI";
+const providerURL = process.env.PROVIDER_URL || "";
 
-const privateKey = "0x7a2f91f91a4949615d62260b332457d12949ac68c68bb6af4a227d18036ac862";
+const privateKey = process.env.PRIVATE_KEY || "";
 const provider = new ethers.JsonRpcProvider(providerURL);
 const signer = new ethers.Wallet(privateKey, provider);
 const contract = new ethers.Contract(contractAddress, contractABI, signer);

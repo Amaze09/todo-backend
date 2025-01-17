@@ -22,7 +22,7 @@ export async function suggestTaskPriority(tasks: taskInput[]): Promise<any> {
     const body = {
         prompt: prompt
     }
-    const url = 'http://localhost:5001/generate';
+    const url = process.env.GPT4ALL_API_URL ||'http://localhost:5001/generate';
     try {
         const response = await axios.post(
             url,
