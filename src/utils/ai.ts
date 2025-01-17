@@ -10,7 +10,6 @@ interface taskInput {
 }
 
 export async function suggestTaskPriority(tasks: taskInput[]): Promise<any> {
-    // Prepare task data as input for GPT-3 model
     const taskDescriptions = tasks.map(task => {
         return `Task Name: ${task.name}\nPriority Rating: ${task.priorityRating}\nDeadline: ${task.deadline}`;
     }).join('\n\n');
@@ -29,7 +28,6 @@ export async function suggestTaskPriority(tasks: taskInput[]): Promise<any> {
             url,
             body
         );
-        console.log("axiossssssssssssssssssssssss")
         return response.data;
     } catch (error) {
         console.error('Error calling OpenAI:', error);
@@ -39,8 +37,8 @@ export async function suggestTaskPriority(tasks: taskInput[]): Promise<any> {
 
 export const mapToTaskInput = (tasks: any[]): taskInput[] => {
     return tasks.map(task => ({
-        name: task.title,  // Mapping the 'title' to 'name'
-        priorityRating: task.priority,  // Mapping 'priority' to 'priorityRating'
-        deadline: task.deadline,  // Keeping 'deadline' as it is
+        name: task.title, 
+        priorityRating: task.priority,  
+        deadline: task.deadline,  
     }));
 };

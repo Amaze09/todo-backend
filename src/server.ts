@@ -5,7 +5,6 @@ import cors from "cors";
 const app = express();
 const PORT = 8080;
 
-// Middleware
 app.use(express.json());
 
 // const allowedOrigins = ['http://localhost', 'http://anotherdomain.com'];
@@ -23,18 +22,15 @@ app.use(express.json());
 //   };
 app.use(cors());
 
-// Routes
 app.use("/api/", router);
 
 const MONGO_URI = "mongodb+srv://priyanshujain:PjayaApVRjb0UEUk@cluster0.uej8d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose.connect(MONGO_URI);
 
-// Base route
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to ToAiDo");
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

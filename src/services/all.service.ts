@@ -7,6 +7,9 @@ import ILogin from '../utils/interfaces/ILogin'
 import IUpdateTask from '../utils/interfaces/IUpdateTask'
 import { suggestTaskPriority, mapToTaskInput } from '../utils/ai';
 import { v4 as uuidv4 } from 'uuid';
+import { ethers } from "ethers";
+import { callStoreHash, callIsTaskCompleted, callCompleteTask } from '../utils/callContract'
+
 
 
 class AllService {
@@ -27,12 +30,13 @@ class AllService {
 
     async getAISuggestion(data: any) {
         try {
-            const tasks = await this.getTasksByUser(data.username) as any[]
-            console.log("tasks------------------",tasks)
+            const userData = await UserModel.findOne({ username: data.username })
+            const tasks = await TaskModel.find({ id: { $in: userData?.taskIds }, completed: false }) as any[]
+
             const taskInputs = mapToTaskInput(tasks)
-            console.log("taskInputs------------------",taskInputs)
+
             const returnValue = await suggestTaskPriority(taskInputs)
-            console.log("returnValue------------------",returnValue)
+
             return {
                 suggestion: returnValue
             }
@@ -95,6 +99,13 @@ class AllService {
 
     async setComplete(id: string) {
         try {
+            const task = await TaskModel.findOne({ id });
+            const concatenated = `${id}${task?.title}`;
+            const taskHash = ethers.keccak256(ethers.toUtf8Bytes(concatenated));
+            const isAlreadyCompleted = await callIsTaskCompleted(taskHash)
+            if (isAlreadyCompleted) { throw new Error("Task already completed") } 
+            const success = await callCompleteTask(taskHash)
+            if (!success) { throw new Error("Error completing task") }
             const data = await TaskModel.findOneAndUpdate({ id }, { completed: true }, { new: true })
             return data
         } catch (error) {
@@ -105,6 +116,10 @@ class AllService {
     async createTask(task: ICreateTask) {
         try {
             const _id = uuidv4()
+            const concatenated = `${_id}${task.title}`;
+            const taskHash = ethers.keccak256(ethers.toUtf8Bytes(concatenated));
+            const success = await callStoreHash(taskHash)
+            if (!success) { throw new Error("Error storing hash") }
             const data = await TaskModel.create({
                 id: _id,
                 title: task.title,
